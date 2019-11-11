@@ -30,18 +30,39 @@ app.get('/items', (req, res) => {
 // POST one item
 app.post('/items', (req, res) =>{
     console.log(req.body)
-    db.query(`INSERT INTO items (text, isDone) VALUES '${req.body.text}', ${req.body.isDone}`
-    res.send('POST one item')
+    db.query(`INSERT INTO items (text,
+         isDone) VALUES ("${req.body.text}",
+     ${req.body.isDone})`, e => {
+         if (e) {
+             console.log(e)
+         }
+         console.log('it worked')
+     })
+    res.sendStatus(200)
 })
 
 // PUT one item
 app.put('/items/:id', (req, res) => {
-    res.send('PUT one item')
+    console.log(parseInt(req.params.id))
+    console.log(req.body)
+    db.query(`UPDATE items SET isDone = ${req.body.isDone} WHERE id = ${parseInt(req.params.id)}`, e => {
+        if (e){
+            console.log(e)
+        }
+        console.log('success')
+    })
+    res.sendStatus(200)
 })
 
 // DELETE one item
 app.delete('/items/:id', (req, res) => {
-    res.send('DELETE one item')
+    db.query(`DELETE FROM items WHERE id = ${parseInt(req.params.id)}`, e => {
+        if (e){
+            console.log(e)
+        }
+        console.log('success')
+    })
+    res.sendStatus(200)
 })
 
 app.listen(3000, () => {
