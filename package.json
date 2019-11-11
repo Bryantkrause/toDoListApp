@@ -1,0 +1,26 @@
+{
+  "name": "toDoListApp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bryantkrause/toDoListApp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bryantkrause/toDoListApp/issues"
+  },
+  "homepage": "https://github.com/Bryantkrause/toDoListApp#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql2": "^2.0.0",
+    "nodemon": "^1.19.4"
+  }
+}
