@@ -4,9 +4,127 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+     <!-- Compiled and minified CSS -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <title>to do list app</title>
 </head>
 <body>
-    <h1> lets do things</h1>
+    
+<div id="container">
+<div class="row card-panel">
+Welcome to the todo list app add some items to get started!
+</div>
+<div class="row card-panel">
+    <form>
+        <div class="input-field">
+            <input type="text" id="text" class ="validate" placeholder="Take out trash">
+            <label for="text">Text</label>
+        </div>
+        <div id="input-field">
+            <button id="addItem" class="btn waves-effect waves-light" type="submit" name="action">Submit<i class="material-icons right">send </i> </button>
+        </div>
+    </form>
+</div>
+<div class="row card-panel">
+       <table class="highlight">
+           <thead>
+               <tr>
+                   <th>text</th>
+                   <th>Is Done</th>
+                   <th></th>
+               </tr>
+           </thead>
+           <tbody id="items">
+
+           </tbody>
+       </table>
+    </div>
+</div>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+<script>    
+
+const buildItems = items =>{
+console.log(items)
+document.getElementById('items').innerHTML = ''
+items.forEach(item => {
+    let itemElem = document.createElement('tr')
+    itemElem.id = `item-${item.id}`
+    itemElem.dataset.isdone = item.isDone
+    itemElem.innerHTML = `
+    <td> ${item.text}</td>
+    <td> ${item.isDone ? 'True' : 'False'}</td>
+    <td><a class= "btn-floating waves-effect waves-light red" '> <i class="deleteItem material-icons" data-id="${item.id}">delete</i></a></td>
+    `
+document.getElementById('items').append(itemElem)
+})
+}
+
+const getItems = _ => {
+axios.get('/items')
+.then(({ data }) => {
+    buildItems(data)
+})
+.catch(e => console.error(e))
+}
+
+const addItem = item => {
+    axios.post('/items', item)
+    .then(_ => {
+        getItems()
+        console.log('success')
+    })
+    .catch(e => console.error(e))
+}
+
+document.getElementById('addItem').addEventListener('click', e => {
+    e.preventDefault()
+    addItem({
+        text: document.getElementById('text').value,
+        isDone: false
+    })
+    document.getElementById('text').value =''
+})
+
+const deleteItem = id => {
+console.log(id)
+axios.delete(`/items/${id}`)
+.then(_ => {
+    getItems()
+    console.log('sucess!')
+})
+.catch(e => console.log(e))
+}
+
+const updateItem = (id, isDone) => {
+console.log(id)
+axios.put(`/items/${id}`, isDone)
+.then(_ => {
+    getItems()
+})
+}
+
+document.addEventListener('click', e =>{
+    console.log(e.target.classList.contains('deleteItem'))
+    if (e.target.classList.contains('deleteItem')){
+        deleteItem(e.target.dataset.id)
+    } else if (e.target.tagName === 'TD') {
+        updateItem(e.target.parentNode.id.split('-')[1],
+        {isDone: e.target.parentNode.dataset.isdone === '0' ? true : false}
+        )
+    }
+})
+
+getItems()
+</script>
+
+
+    
+
 </body>
 </html>
